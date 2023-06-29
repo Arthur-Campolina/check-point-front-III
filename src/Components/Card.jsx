@@ -7,7 +7,6 @@ const Card = () => {
   return (
     <>
 
-      {dentistas.map(dentista => (
 
       {/* //Na linha seguinte deverá ser feito um teste se a aplicação
         // está em dark mode e deverá utilizar o css correto */}
