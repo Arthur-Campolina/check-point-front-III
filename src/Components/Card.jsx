@@ -1,12 +1,18 @@
-import styles from "./Card.module.css";
 import { useEffect, useState, useContext } from "react";
+import styles from "./Card.module.css";
+
 
 const Card = () => {
 
   return (
     <>
+
+      {dentistas.map(dentista => (
+
       {/* //Na linha seguinte deverá ser feito um teste se a aplicação
         // está em dark mode e deverá utilizar o css correto */}
+
+      
       <div className={`card`}>
         <img
           className="card-img-top"
@@ -16,8 +22,10 @@ const Card = () => {
         <div className={`card-body ${styles.CardBody}`}>
           {/* Na linha seguinte o link deverá utilizar a matricula, nome e sobrenome do dentista
           que vem da API */}
-          <a href={`/dentist/MatriculaDoDentista`}>
-            <h5 className={`card-title ${styles.title}`}>Nome e Sobrenome do dentista</h5>
+
+              a href={`/detail/${dentista.matricula}`}>
+              <h5 className={`card-title ${styles.title}`}>{dentista.nome}</h5>
+              <p className={`card-title ${styles.title}`}>@{dentista.usuario.username}</p>
           </a>
         </div>
       </div>
