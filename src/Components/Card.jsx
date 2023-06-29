@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import styles from "./Card.module.css";
+import api from "../../services/api";
 
 
 const Card = () => {
