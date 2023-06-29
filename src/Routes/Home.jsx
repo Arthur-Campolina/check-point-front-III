@@ -1,20 +1,33 @@
-import { useEffect } from "react";
+import React from "react";
 import Card from "../Components/Card";
+import axios from "axios";
 
 const Home = () => {
-
-  useEffect(() => {
-    //Nesse useEffect, deverá ser obtido todos os dentistas da API
-    //Armazena-los em um estado para posteriormente fazer um map
-    //Usando o componente <Card />
+  const [dentists, setDentists] = React.useState([])
+  async function fetchDentists() {
+    try {
+      const response = await axios('https://dhodonto.ctdprojetointegrador.com/dentista')
+      if (!response) {
+        console.error("No dentists were found!", response)
+        return
+      }
+      setDentists(response.data)
+    } catch (error) {
+      console.error("Error to fecth dentists", error)
+    }
+  }
+  React.useEffect(() => {
+    fetchDentists()
   }, []);
 
   return (
     <>
       <h1>Home</h1>
-      <div className="card-grid container">
-        <Card />
-      </div>
+      {dentists.map((dentist) => (
+        <div className="card-grid container">
+          <Card key={dentist.matricula} dentist={dentist} />
+        </div>
+      ))}
     </>
   );
 };
