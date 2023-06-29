@@ -1,4 +1,5 @@
 import styles from "./Card.module.css";
+import { useEffect, useState, useContext } from "react";
 
 const Card = () => {
 
