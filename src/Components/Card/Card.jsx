@@ -1,31 +1,33 @@
 import React from 'react'
-// import { DentisContext } from "../../Contexts/DentistContext";
 import styles from "./Card.module.css";
+import { DentistContext } from '../../Contexts/DentistContext';
+import { Link, createSearchParams } from 'react-router-dom';
 
-const Card = ({ dentist }) => {
-  // const { dispatch } = React.useContext(DentisContext)
-  // const onClickDentistDetail = React.useCallback(() => {
-  //   dispatch({
-  //     type: "GET-BY-ID",
-  //     payload: dentist.matricula,
-  //   })
-  // }, [dentist.matricula])
+const Card = () => {
+  // const { darkMode } = useContext(ThemeContext);
+  const { dentists } = React.useContext(DentistContext)
+
   return (
-    <div >
-      <img
-        className="card-img-top"
-        src="/images/doctor.jpg"
-        alt="doctor placeholder"
-      />
-      <div className={`card-body ${styles.CardBody}`}>
-        {/* Na linha seguinte o link deverá utilizar a matricula, nome e sobrenome do dentista
-          que vem da API */}
-        <h5 className={`card-title ${styles.title}`}>{dentist.nome}</h5>
-        <p className={`card-title ${styles.title}`}>@{dentist.usuario.username}</p>
-        <button onClick={() => console.log(dentist.matricula)}>Mais</button>
-      </div>
-    </div>
+    <>
+      {dentists.map((dentist) => (
+        <div key={dentist.matricula} className={styles.card}>
+          <img
+            className="card-img-top"
+            src="/images/doctor.jpg"
+            alt="doctor placeholder"
+          />
+          <div className={`card-body`}>
+            <Link to={{ pathname: "/dentista", search: `?matricula=${createSearchParams(`${dentist.matricula}`)}` }}>
+              <h5 className="card-title">
+                {dentist.nome} {dentist.sobrenome}
+              </h5>
+              <p className={`card-title ${styles.title}`}>@{dentist.usuario.username}</p>
+            </Link>
+          </div>
+        </div >
+      ))}
+    </>
   );
-}
+};
 
 export default Card;

@@ -1,11 +1,11 @@
-.cardDark{
+.cardDark {
   background-color: #31313196;
 }
 
-.card:hover{
+.card:hover {
   border: 0.5px solid rgb(206, 217, 142);
 }
 
-.button{
+.button {
   margin-top: 2rem;
 }

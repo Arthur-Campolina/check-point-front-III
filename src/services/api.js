@@ -1,6 +1,6 @@
 import axios from "axios";
-import React from 'react'
 const baseURL = "https://dhodonto.ctdprojetointegrador.com"
+
 const api = async (method, endpoint, body) => {
 
   try {
@@ -11,7 +11,6 @@ const api = async (method, endpoint, body) => {
     }
     if (method === "getById") {
       const path = baseURL + `${endpoint}`
-
       const response = await axios(path)
       return response.data
     }

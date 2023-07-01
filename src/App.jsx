@@ -2,7 +2,7 @@
 import { Outlet } from "react-router-dom";
 
 import React from "react";
-import { DentisContext } from "./Contexts/DentistContext";
+import { DentistContext } from "./Contexts/DentistContext";
 import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Navbar/Navbar";
 import api from "./services/api";
@@ -33,7 +33,7 @@ function App() {
       case "GET":
         return action.payload
       case "GET-BY-ID":
-        return state.filter((dentist) => dentist.matricula = action.payload)
+        return action.payload
       default:
         return state
     }
@@ -45,11 +45,11 @@ function App() {
         // está em dark mode e deverá utilizar a classe dark ou light */}
       <div className={`app light}`}>
         <Navbar />
-        <DentisContext.Provider value={{ dentists, dispatch }}>
+        <DentistContext.Provider value={{ dentists, dispatch }}>
           <main>
             <Outlet />
           </main>
-        </DentisContext.Provider>
+        </DentistContext.Provider>
         <Footer />
       </div>
     </>

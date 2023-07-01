@@ -19,7 +19,7 @@ root.render(
       <Route element={<App />}>
         <Route path="/" element={<Navigate to={"/home"} />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/dentist/:id" element={<Detail />} />
+        <Route path="/dentista" element={<Detail />} />
       </Route>
     </Routes>
   </BrowserRouter >
