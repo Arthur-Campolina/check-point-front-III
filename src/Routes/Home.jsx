@@ -4,7 +4,7 @@ import Card from "../Components/Card/Card";
 import '../index.css'
 
 const Home = () => {
-  const dentists = React.useContext(DentisContext)
+  const { dentists } = React.useContext(DentisContext)
 
   return (
     <>

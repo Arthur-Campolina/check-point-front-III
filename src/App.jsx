@@ -2,21 +2,25 @@
 import { Outlet } from "react-router-dom";
 
 import React from "react";
-import axios from "axios";
 import { DentisContext } from "./Contexts/DentistContext";
 import Footer from "./Components/Footer/Footer";
 import Navbar from "./Components/Navbar/Navbar";
+import api from "./services/api";
 
 function App() {
-  const [dentists, setDentists] = React.useState([])
   async function fetchDentists() {
     try {
-      const response = await axios('https://dhodonto.ctdprojetointegrador.com/dentista')
+      const response = await api('getAllDentists', '/dentista')
       if (!response) {
         console.error("No dentists were found!", response)
         return
       }
-      setDentists(response.data)
+      if (response) {
+        dispatch({
+          type: "GET",
+          payload: response
+        })
+      }
     } catch (error) {
       console.error("Error to fecth dentists", error)
     }
@@ -24,15 +28,24 @@ function App() {
   React.useEffect(() => {
     fetchDentists()
   }, []);
-
-
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case "GET":
+        return action.payload
+      case "GET-BY-ID":
+        return state.filter((dentist) => dentist.matricula = action.payload)
+      default:
+        return state
+    }
+  }
+  const [dentists, dispatch] = React.useReducer(reducer, [])
   return (
     <>
       {/* //Na linha seguinte deverá ser feito um teste se a aplicação
         // está em dark mode e deverá utilizar a classe dark ou light */}
       <div className={`app light}`}>
         <Navbar />
-        <DentisContext.Provider value={dentists}>
+        <DentisContext.Provider value={{ dentists, dispatch }}>
           <main>
             <Outlet />
           </main>

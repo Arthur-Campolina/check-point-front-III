@@ -1,8 +1,15 @@
+import React from 'react'
+// import { DentisContext } from "../../Contexts/DentistContext";
 import styles from "./Card.module.css";
 
 const Card = ({ dentist }) => {
-  console.log("Dentista", dentist)
-
+  // const { dispatch } = React.useContext(DentisContext)
+  // const onClickDentistDetail = React.useCallback(() => {
+  //   dispatch({
+  //     type: "GET-BY-ID",
+  //     payload: dentist.matricula,
+  //   })
+  // }, [dentist.matricula])
   return (
     <div >
       <img
