@@ -1,15 +1,17 @@
 import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import { LoginContext } from '../contexts/login-context';
+import { useNavigate } from 'react-router-dom';
+
 import styles from "./Form.module.css";
-import { ThemeContext } from '../contexts/theme-context'; // Adicione seu context de tema aqui
+import { AuthContext } from '../../Contexts/AuthContext';
+import { ThemeContext } from '../../Contexts/ThemContext';
+// Adicione seu context de tema aqui
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { saveToken } = useContext(LoginContext);
+  const { saveUserTokenLocalStorage } = useContext(AuthContext);
   const { theme } = useContext(ThemeContext); // Use o context de tema aqui
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,10 +29,10 @@ const LoginForm = () => {
       }
 
       const { token } = await response.json();
-      saveToken(`Bearer ${token}`);
+      saveUserTokenLocalStorage(`Bearer ${token}`);
 
       // Redireciona o usuário para a página inicial
-      history.push('/home');
+      navigate('/home');
 
       // Mostra uma mensagem de sucesso
       alert('Login efetuado com sucesso!');

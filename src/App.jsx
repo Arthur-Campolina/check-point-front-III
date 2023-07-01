@@ -1,10 +1,11 @@
 
 import { Outlet } from "react-router-dom";
-import Footer from "./Components/Footer";
-import Navbar from "./Components/Navbar";
+
 import React from "react";
 import axios from "axios";
 import { DentisContext } from "./Contexts/DentistContext";
+import Footer from "./Components/Footer/Footer";
+import Navbar from "./Components/Navbar/Navbar";
 
 function App() {
   const [dentists, setDentists] = React.useState([])
@@ -41,5 +42,7 @@ function App() {
     </>
   );
 }
+
+//teste
 
 export default App;
