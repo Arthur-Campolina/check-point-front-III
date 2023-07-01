@@ -2,25 +2,13 @@ import React from "react";
 import styles from "./ScheduleForm.module.css";
 import { DentistContext } from "../../Contexts/DentistContext";
 import api from "../../services/api";
+import { useAuth } from "../../Contexts/AuthContext";
 
 const ScheduleForm = () => {
+  const { getUserTokenLocalStorage } = useAuth()
+  const token = getUserTokenLocalStorage()
   const { dentists } = React.useContext(DentistContext)
   const [patients, setPatients] = React.useState([]);
-  const [patientInput, setPatientInputValue] = React.useState({})
-  const [dentistInput, setDentistInputValue] = React.useState({})
-  const [dateInput, setDateInputValue] = React.useState({})
-
-  const onChangePatientHandle = (event) => {
-    console.log("Input", event.target.value)
-    setPatientInputValue(event.target.value)
-  }
-  const onChangDentistHandle = (event) => {
-    setDentistInputValue(event.target.value)
-  }
-  const onChangeDateInput = (event) => {
-    console.log(event.target.value)
-    setDateInputValue(event.target.value)
-  }
 
   const fetchPacientes = async () => {
     const response = await api('getAllPacients', "/paciente")
@@ -30,17 +18,55 @@ const ScheduleForm = () => {
   React.useEffect(() => {
     fetchPacientes();
   }, []);
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(dateInput)
+    e.preventDefault()
+    const form = new FormData(e.target)
+    const dentistId = form.get("dentist")
+    const patientId = form.get("patient")
+    const appointmentDate = form.get("appointmentDate")
+    const selectedPatient = patients.find((patient) => patient.matricula === patientId)
+    const selectedDentist = dentists.find((dentist) => dentist.matricula === dentistId)
 
     const appointment = {
-      paciente: patientInput,
-      dentista: dentistInput,
-      dataHoraAgendamento: dateInput,
+      paciente: {
+        nome: selectedPatient.nome,
+        sobrenome: selectedPatient.sobrenome,
+        matricula: selectedPatient.matricula,
+        usuario: {
+          username: selectedPatient.usuario.username,
+        },
+        endereco: {
+          id: selectedPatient.endereco.id,
+          logradouro: selectedPatient.endereco.logradouro,
+          numero: selectedPatient.endereco.numero,
+          complemento: selectedPatient.endereco.complemento,
+          bairro: selectedPatient.endereco.bairro,
+          municipio: selectedPatient.endereco.municipio,
+          estado: selectedPatient.endereco.estado,
+          cep: selectedPatient.endereco.cep,
+          pais: selectedPatient.endereco.pais,
+        },
+        dataDeCadastro: selectedPatient.dataDeCadastro,
+      },
+      dentista: {
+        nome: selectedDentist.nome,
+        sobrenome: selectedDentist.sobrenome,
+        matricula: selectedDentist.matricula,
+        usuario: {
+          username: selectedDentist.usuario.username,
+        },
+      },
+      dataHoraAgendamento: appointmentDate,
     };
-    const response = await api('post', '/consulta', appointment)
-    if (response.status === 200) alert('Consulta marcada com sucesso!')
+
+    console.log(JSON.stringify(appointment))
+    const response = await api('post', '/consulta', appointment, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    console.log("Consulta Response", response)
   };
 
   return (
@@ -54,7 +80,7 @@ const ScheduleForm = () => {
               </label>
               <select className="form-select" name="dentist" id="dentist">
                 {dentists.map((dentist) => (
-                  <option key={dentist.matricula} value={dentistInput} onChange={onChangDentistHandle}>
+                  <option key={dentist.matricula} value={dentist.matricula}>
                     {dentist.nome} {dentist.sobrenome}
                   </option>
                 ))}
@@ -66,7 +92,7 @@ const ScheduleForm = () => {
               </label>
               <select className="form-select" name="patient" id="patient">
                 {patients && patients.map((patient) => (
-                  <option key={patient.matricula} value={patientInput} onChange={onChangePatientHandle}>
+                  <option key={patient.matricula} value={patient.matricula}>
                     {patient.nome} {patient.sobrenome}
                   </option>
                 ))}
@@ -83,8 +109,6 @@ const ScheduleForm = () => {
                 id="appointmentDate"
                 name="appointmentDate"
                 type="datetime-local"
-                value={dateInput}
-                onChange={onChangeDateInput}
               />
             </div>
           </div>
