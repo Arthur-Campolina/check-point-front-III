@@ -3,7 +3,8 @@ import styles from "./Card.module.css";
 import api from "../../services/api";
 
 
-const Card = () => {
+const Card = ({ dentist }) => {
+  console.log("Dentista", dentist)
 
   return (
     <>
@@ -23,7 +24,6 @@ const Card = () => {
 
           {/* Na linha seguinte o link deverá utilizar a matricula, nome e sobrenome do dentista
           que vem da API */}
-
               a href={`/detail/${dentista.matricula}`}
               <h5 className={`card-title ${styles.title}`}>{dentista.nome}</h5>
               <p className={`card-title ${styles.title}`}>@{dentista.usuario.username}</p>
