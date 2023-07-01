@@ -14,6 +14,11 @@ const api = async (method, endpoint, body) => {
       const response = await axios(path)
       return response.data
     }
+    if (method === "auth") {
+      const path = baseURL + `${endpoint}`
+      const response = await axios(path, body)
+      return response
+    }
   } catch (error) {
     console.error("Erro ao conectar com a API")
   }

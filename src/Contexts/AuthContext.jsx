@@ -6,13 +6,19 @@ export const AuthProvider = ({ children }) => {
     const saveUserTokenLocalStorage = (token) => {
         localStorage.setItem(tokenName, token)
     }
+    const getUserTokenLocalStorage = () => {
+        localStorage.setItem(tokenName)
+    }
     const removeUserTokenLocalStorage = () => {
         localStorage.removeItem(tokenName)
     }
     return (
-        <AuthContext.Provider value={{ saveUserTokenLocalStorage, removeUserTokenLocalStorage }}>
+        <AuthContext.Provider value={{ saveUserTokenLocalStorage, getUserTokenLocalStorage, removeUserTokenLocalStorage }}>
             {children}
         </AuthContext.Provider>
     )
 }
 
+export function useAuth() {
+    return React.useContext(AuthContext)
+}

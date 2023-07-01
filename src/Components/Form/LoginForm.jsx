@@ -1,43 +1,41 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import styles from "./Form.module.css";
-import { AuthContext } from '../../Contexts/AuthContext';
-import { ThemeContext } from '../../Contexts/ThemContext';
+import api from '../../services/api';
+// import { ThemeContext } from '../../Contexts/ThemContext';
+import { useAuth } from '../../Contexts/AuthContext';
+
 // Adicione seu context de tema aqui
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const { saveUserTokenLocalStorage } = useContext(AuthContext);
-  const { theme } = useContext(ThemeContext); // Use o context de tema aqui
+  const authState = useAuth()
   const navigate = useNavigate();
+  const [username, setUsername] = React.useState('')
+  const [password, setPassword] = React.useState('')
+  const handleLoginFormUserName = (e) => {
+    setUsername(e.target.value)
+  }
+  const handleLoginFormPassword = (e) => {
+    setPassword(e.target.value)
+  }
+
+  // const { theme } = React.useContext(ThemeContext); // Use o context de tema aqui
+  const theme = ''
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const login = {
+      username: username,
+      password: password,
+    }
     try {
-      // Faça aqui sua chamada à API de autenticação
-      const response = await fetch('/auth', { // Adicione o caminho correto da sua API aqui
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Erro na autenticação');
-      }
-
+      const response = await api('/auth', login);
       const { token } = await response.json();
-      saveUserTokenLocalStorage(`Bearer ${token}`);
-
-      // Redireciona o usuário para a página inicial
+      authState.saveUserTokenLocalStorage(`Bearer ${token}`);
       navigate('/home');
-
-      // Mostra uma mensagem de sucesso
       alert('Login efetuado com sucesso!');
     } catch (error) {
-      // Mostra uma mensagem de erro
       alert(error.message);
     }
   };
@@ -53,14 +51,14 @@ const LoginForm = () => {
               className={`form-control ${styles.inputSpacing}`}
               placeholder="Login"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={handleLoginFormUserName}
               required
             />
             <input
               className={`form-control ${styles.inputSpacing}`}
               placeholder="Password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleLoginFormPassword}
               type="password"
               required
             />
