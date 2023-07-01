@@ -1,75 +1,99 @@
-import { useContext, useEffect, useState } from "react";
+import React from "react";
 import styles from "./ScheduleForm.module.css";
+import { DentistContext } from "../../Contexts/DentistContext";
+import api from "../../services/api";
 
 const ScheduleForm = () => {
-  useEffect(() => {
-    //Nesse useEffect, você vai fazer um fetch na api buscando TODOS os dentistas
-    //e pacientes e carregar os dados em 2 estados diferentes
-  }, []);
+  const { dentists } = React.useContext(DentistContext)
+  const [patients, setPatients] = React.useState([]);
+  const [patientInput, setPatientInputValue] = React.useState({})
+  const [dentistInput, setDentistInputValue] = React.useState({})
+  const [dateInput, setDateInputValue] = React.useState({})
 
-  const handleSubmit = (event) => {
-    //Nesse handlesubmit você deverá usar o preventDefault,
-    //obter os dados do formulário e enviá-los no corpo da requisição 
-    //para a rota da api que marca a consulta
-    //lembre-se que essa rota precisa de um Bearer Token para funcionar.
-    //Lembre-se de usar um alerta para dizer se foi bem sucedido ou ocorreu um erro
+  const onChangePatientHandle = (event) => {
+    console.log("Input", event.target.value)
+    setPatientInputValue(event.target.value)
+  }
+  const onChangDentistHandle = (event) => {
+    setDentistInputValue(event.target.value)
+  }
+  const onChangeDateInput = (event) => {
+    console.log(event.target.value)
+    setDateInputValue(event.target.value)
+  }
+
+  const fetchPacientes = async () => {
+    const response = await api('getAllPacients', "/paciente")
+    const allPatients = response.data.body
+    if (allPatients) setPatients(allPatients)
+  };
+  React.useEffect(() => {
+    fetchPacientes();
+  }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(dateInput)
+
+    const appointment = {
+      paciente: patientInput,
+      dentista: dentistInput,
+      dataHoraAgendamento: dateInput,
+    };
+    const response = await api('post', '/consulta', appointment)
+    if (response.status === 200) alert('Consulta marcada com sucesso!')
   };
 
   return (
     <>
-      {/* //Na linha seguinte deverá ser feito um teste se a aplicação
-        // está em dark mode e deverá utilizar o css correto */}
-      <div
-        className={`text-center container}`
-        }
-      >
+      <div className={`text-center container`}>
         <form onSubmit={handleSubmit}>
           <div className={`row ${styles.rowSpacing}`}>
             <div className="col-sm-12 col-lg-6">
               <label htmlFor="dentist" className="form-label">
-                Dentist
+                Dentista
               </label>
               <select className="form-select" name="dentist" id="dentist">
-                {/*Aqui deve ser feito um map para listar todos os dentistas*/}
-                <option key={'Matricula do dentista'} value={'Matricula do dentista'}>
-                  {`Nome Sobrenome`}
-                </option>
+                {dentists.map((dentist) => (
+                  <option key={dentist.matricula} value={dentistInput} onChange={onChangDentistHandle}>
+                    {dentist.nome} {dentist.sobrenome}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="col-sm-12 col-lg-6">
               <label htmlFor="patient" className="form-label">
-                Patient
+                Paciente
               </label>
               <select className="form-select" name="patient" id="patient">
-                {/*Aqui deve ser feito um map para listar todos os pacientes*/}
-                <option key={'Matricula do paciente'} value={'Matricula do paciente'}>
-                  {`Nome Sobrenome`}
-                </option>
+                {patients && patients.map((patient) => (
+                  <option key={patient.matricula} value={patientInput} onChange={onChangePatientHandle}>
+                    {patient.nome} {patient.sobrenome}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
           <div className={`row ${styles.rowSpacing}`}>
             <div className="col-12">
               <label htmlFor="appointmentDate" className="form-label">
-                Date
+                Data
               </label>
               <input
                 className="form-control"
                 id="appointmentDate"
                 name="appointmentDate"
                 type="datetime-local"
+                value={dateInput}
+                onChange={onChangeDateInput}
               />
             </div>
           </div>
           <div className={`row ${styles.rowSpacing}`}>
-            {/* //Na linha seguinte deverá ser feito um teste se a aplicação
-        // está em dark mode e deverá utilizar o css correto */}
             <button
-              className={`btn btn-light ${styles.button
-                }`}
+              className={`btn btn-light ${styles.button}`}
               type="submit"
             >
-              Schedule
+              Marcar Consulta
             </button>
           </div>
         </form>

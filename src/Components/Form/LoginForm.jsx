@@ -30,9 +30,9 @@ const LoginForm = () => {
       password: password,
     }
     try {
-      const response = await api('/auth', login);
-      const { token } = await response.json();
-      authState.saveUserTokenLocalStorage(`Bearer ${token}`);
+      const response = await api('auth', '/auth', login);
+      console.log("Token", response)
+      authState.saveUserTokenLocalStorage(response);
       navigate('/home');
       alert('Login efetuado com sucesso!');
     } catch (error) {

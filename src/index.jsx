@@ -8,21 +8,34 @@ import Detail from "./Routes/Detail";
 import Login from "./Routes/Login";
 import Home from "./Routes/Home";
 import "./index.css";
-import { AuthProvider } from "./Contexts/AuthContext";
+import { AuthProvider, useAuth } from "./Contexts/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 //Lembre-se de configurar suas rotas e seu contexto aqui
 root.render(
   <AuthProvider>
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route element={<App />}>
-          <Route path="/" element={<Navigate to={"/home"} />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/dentista" element={<Detail />} />
-        </Route>
-      </Routes>
+      <RootRoutes />
     </BrowserRouter >
   </AuthProvider>
 );
+
+function RootRoutes() {
+  const { authenticated } = useAuth()
+  if (!authenticated) return (
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Navigate to={"/login"} />} />
+    </Routes>
+  )
+  return (
+    <Routes>
+      <Route path="/login" element={<Navigate to={"/home"} />} />
+      <Route element={<App />}>
+        <Route path="/" element={<Navigate to={"/home"} />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/dentista" element={<Detail />} />
+      </Route>
+    </Routes>
+  )
+}
