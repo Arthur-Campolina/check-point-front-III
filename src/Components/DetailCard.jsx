@@ -7,19 +7,8 @@ const DetailCard = () => {
   useEffect(() => {
     //Nesse useEffect, você vai fazer um fetch na api passando o 
     //id do dentista que está vindo do react-router e carregar os dados em algum estado
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/dentists/${id}`); // Substitua com a URL correta da sua API
-        const data = await response.json();
-        setDentistData(data);
-      } catch (error) {
-        console.error('Error fetching dentist data:', error);
-      }
-    };
-
-    fetchData();
-  }, [id]);
-
+    
+  }, []);
   return (
     //As instruções que estão com {''} precisam ser 
     //substituídas com as informações que vem da api
