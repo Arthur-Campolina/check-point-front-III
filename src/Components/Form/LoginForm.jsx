@@ -13,6 +13,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const [username, setUsername] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
   const handleLoginFormUserName = (e) => {
     setUsername(e.target.value)
   }
@@ -30,11 +31,24 @@ const LoginForm = () => {
       password: password,
     }
     try {
+      setLoading(true)
       const response = await api('auth', '/auth', login);
-      console.log("Token", response)
-      authState.saveUserTokenLocalStorage(response);
-      navigate('/home');
-      alert('Login efetuado com sucesso!');
+      setTimeout(() => {
+        console.log("Token", response)
+        if (!response) {
+          authState.removeUserTokenLocalStorage()
+          alert('Erro ao efetuar Login, tente novamente!');
+          setUsername('')
+          setPassword('')
+          setLoading(false)
+        }
+        if (response) {
+          authState.saveUserTokenLocalStorage(response);
+          navigate('/home');
+          alert('Login efetuado com sucesso!');
+          setLoading(false)
+        }
+      }, 3000)
     } catch (error) {
       alert(error.message);
     }
@@ -65,6 +79,7 @@ const LoginForm = () => {
             <button className="btn btn-primary" type="submit">
               Send
             </button>
+            {loading && <p>Carregando...</p>}
           </form>
         </div>
       </div>

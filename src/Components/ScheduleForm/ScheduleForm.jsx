@@ -3,14 +3,15 @@ import styles from "./ScheduleForm.module.css";
 import { DentistContext } from "../../Contexts/DentistContext";
 import api from "../../services/api";
 import { useAuth } from "../../Contexts/AuthContext";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ScheduleForm = () => {
-  const { getUserTokenLocalStorage, /*removeUserTokenLocalStorage*/ } = useAuth()
+  const { getUserTokenLocalStorage, removeUserTokenLocalStorage } = useAuth()
   const token = getUserTokenLocalStorage()
   const { dentists } = React.useContext(DentistContext)
   const [patients, setPatients] = React.useState([]);
-  // const navigate = useNavigate()
+  const [loading, setLoading] = React.useState('')
+  const navigate = useNavigate()
 
   const fetchPacientes = async () => {
     const response = await api('getAllPacients', "/paciente")
@@ -22,6 +23,7 @@ const ScheduleForm = () => {
   }, []);
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault()
     const form = new FormData(e.target)
     const dentistId = form.get("dentist")
@@ -61,20 +63,25 @@ const ScheduleForm = () => {
       },
       dataHoraAgendamento: appointmentDate,
     };
-
-    console.log(JSON.stringify(appointment))
+    console.log("Appointment", appointment)
     const response = await api('post', '/consulta', appointment, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-    // if (!response) {
-    //   removeUserTokenLocalStorage()
-    //   alert('Erro ao acessar api, faça login novamente')
-    //   navigate('/login')
-    // }
-    if (response) alert('Consulta cadastrada com sucesso!')
-    console.log("Consulta Response", response)
+    setTimeout(() => {
+      if (!response) {
+        removeUserTokenLocalStorage()
+        alert('Erro ao acessar api, faça login novamente')
+        navigate('/login')
+        setLoading(false)
+      }
+      if (response) {
+        alert('Consulta cadastrada com sucesso!')
+        setLoading(false)
+      }
+      console.log("Consulta Response", response)
+    }, 3000)
   };
 
   return (
@@ -128,6 +135,7 @@ const ScheduleForm = () => {
               Marcar Consulta
             </button>
           </div>
+          {loading && <p>Carregando...</p>}
         </form>
       </div>
     </>
