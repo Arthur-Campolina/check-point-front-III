@@ -3,14 +3,14 @@ import styles from "./ScheduleForm.module.css";
 import { DentistContext } from "../../Contexts/DentistContext";
 import api from "../../services/api";
 import { useAuth } from "../../Contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const ScheduleForm = () => {
-  const { getUserTokenLocalStorage, removeUserTokenLocalStorage } = useAuth()
+  const { getUserTokenLocalStorage, /*removeUserTokenLocalStorage*/ } = useAuth()
   const token = getUserTokenLocalStorage()
   const { dentists } = React.useContext(DentistContext)
   const [patients, setPatients] = React.useState([]);
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   const fetchPacientes = async () => {
     const response = await api('getAllPacients', "/paciente")
@@ -68,11 +68,11 @@ const ScheduleForm = () => {
         Authorization: `Bearer ${token}`,
       },
     })
-    if (!response) {
-      removeUserTokenLocalStorage()
-      alert('Erro ao acessar api, faça login novamente')
-      navigate('/login')
-    }
+    // if (!response) {
+    //   removeUserTokenLocalStorage()
+    //   alert('Erro ao acessar api, faça login novamente')
+    //   navigate('/login')
+    // }
     if (response) alert('Consulta cadastrada com sucesso!')
     console.log("Consulta Response", response)
   };
